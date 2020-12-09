@@ -40,8 +40,37 @@ const App=()=>{
 
   return(
     <>
-    <View>
+    <View style={styles.container}>
       <Text>Hello</Text>
+      {image?(<Text>Image is there</Text>):
+      (<RNCamera style={styles.preview}
+         type={RNCamera.Constants.Type.back} 
+        captureAudio={false}
+        flashMode={RNCamera.Constants.FlashMode.on}
+        androidCameraPermissionOptions={{
+          title:"Permission to use camera",
+          message:"longer text to use camera",
+          buttonPositive:"Ok",
+          buttonNegative:"Cancel"
+        }}
+        androidRecordAudioPermissionOptions={{
+          title:"Permission to use audio",
+          message:"longer text to use audio",
+          buttonPositive:"Ok",
+          buttonNegative:"Cancel"
+        }}
+      >
+        {({camera,status})=>{
+          if(status !== 'READY') return <PendingView/>
+          return (
+            <View style={{flex:'0',flexDirection:'row',justifyContent:'center'}}>
+              <TouchableOpacity onPress={()=>takePicture(camera)} style={styles.capture}>
+                <Text>SNAP</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        }}
+      </RNCamera>)}
     </View>
     </>
   )
@@ -50,3 +79,22 @@ const App=()=>{
 
 
 export default App;
+
+const styles=StyleSheet.create({
+  container:{
+    flex:1,
+    flexDirection:"column",
+    backgroundColor:"#0A79DF"
+  },
+  preview:{
+    flex:1,
+    justifyContent:"space-around",
+    alignItems:'center'
+  },
+  capture:{
+    flex:0,
+    backgroundColor:'orange',
+    padding:20,
+    alignSelf:'center'
+  }
+})
